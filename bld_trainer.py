@@ -1,5 +1,5 @@
 from lib.drawer import RubiksCubeDrawer
-from lib.rubiks_cube import RubiksCube
+from lib.rubiks_cube import Move, RubiksCube
 from lib.scrambler import RubiksCubeScrambler
 from lib.solver import M2Solver, Target
 
@@ -25,11 +25,12 @@ def main():
     corner_targets = _input_targets(f"Corners:\n# ")
     edge_targets = _input_targets(f"Edges:\n# ")
     # Check solutions
-    solved_cube = M2Solver.apply_solution(rc, edge_targets, corner_targets)
+    rc = rc.apply([Move.Z2])
+    rc = M2Solver.apply_solution(rc, edge_targets, corner_targets)
     print()
-    print(RubiksCubeDrawer.draw(solved_cube))
+    print(RubiksCubeDrawer.draw(rc))
     print()
-    if solved_cube.is_solved():
+    if rc.is_solved():
         print(f"Memorization successful!")
     else:
         print(f"Memorization failed.")
