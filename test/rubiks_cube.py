@@ -1,6 +1,7 @@
 import unittest
 
 from lib.rubiks_cube import Color as C, Move, RubiksCube
+from lib.utils import flatten
 
 
 class TestRubiksCube(unittest.TestCase):
@@ -88,6 +89,16 @@ class TestRubiksCube(unittest.TestCase):
                 C.ORANGE, C.ORANGE, C.ORANGE, C.ORANGE,
                 C.WHITE, C.YELLOW, C.WHITE, C.YELLOW
             ]
+        )
+        self.assertEqual(expected, actual)
+
+    def test_apply_Z2(self):
+        actual = RubiksCube().apply([Move.Z2])
+        centers = [C.YELLOW, C.GREEN, C.ORANGE, C.BLUE, C.RED, C.WHITE]
+        expected = RubiksCube(
+            centers,
+            flatten([[c] * 4 for c in centers]),
+            flatten([[c] * 4 for c in centers])
         )
         self.assertEqual(expected, actual)
 
