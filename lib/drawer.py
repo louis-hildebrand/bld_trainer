@@ -1,22 +1,37 @@
-from colorama import Back as ANSI
+try:
+    import colorama
+except ImportError:
+    colorama = None
 
 from lib.rubiks_cube import Color, RubiksCube
 
 
 class RubiksCubeDrawer:
-    ANSI_START = {
-        Color.WHITE: ANSI.WHITE,
-        Color.GREEN: ANSI.GREEN,
-        Color.RED: ANSI.RED,
-        Color.BLUE: ANSI.BLUE,
-        Color.ORANGE: ANSI.MAGENTA,
-        Color.YELLOW: ANSI.YELLOW
-    }
-    ANSI_END = ANSI.RESET
+    @staticmethod
+    def _ansi_start(color: Color) -> str:
+        if not colorama:
+            return ""
+        else:
+            match color:
+                case Color.WHITE:
+                    return colorama.Back.WHITE + colorama.Fore.BLACK
+                case Color.GREEN:
+                    return colorama.Back.GREEN + colorama.Fore.BLACK
+                case Color.RED:
+                    return colorama.Back.RED
+                case Color.BLUE:
+                    return colorama.Back.BLUE
+                case Color.ORANGE:
+                    return colorama.Back.MAGENTA
+                case Color.YELLOW:
+                    return colorama.Back.YELLOW + colorama.Fore.BLACK
+
+    ANSI_END = colorama.Back.RESET + colorama.Fore.RESET if colorama else ""
 
     @staticmethod
     def _cell(color: Color) -> str:
-        return RubiksCubeDrawer.ANSI_START[color] + "   " + RubiksCubeDrawer.ANSI_END
+        letter = color.name[0]
+        return RubiksCubeDrawer._ansi_start(color) + f" {letter} " + RubiksCubeDrawer.ANSI_END
 
     @staticmethod
     def draw(rc: RubiksCube) -> str:
