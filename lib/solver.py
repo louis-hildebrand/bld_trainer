@@ -110,8 +110,6 @@ class M2Solver:
         if len(edge_targets) % 2 == 1:
             alg += M2Solver._PARITY_ALGORITHM
         # Corners
-        for (i, target) in enumerate(corner_targets):
-            if i % 2 == 1:
-                target = target.flip()
+        for target in corner_targets:
             alg += M2Solver._CORNER_ALGORITHMS[target]
         return rc.apply(alg)
