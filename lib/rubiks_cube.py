@@ -19,15 +19,15 @@ class Color(Enum):
 
 
 class Layer(Enum):
-    U = "U"
-    F = "F"
-    R = "R"
-    B = "B"
-    L = "L"
-    D = "D"
-    M = "M"
-    E = "E"
-    S = "S"
+    U = auto()
+    F = auto()
+    R = auto()
+    B = auto()
+    L = auto()
+    D = auto()
+    M = auto()
+    E = auto()
+    S = auto()
 
     def parallel(self: Layer) -> set[Layer]:
         match self:
@@ -41,7 +41,7 @@ class Layer(Enum):
                 raise ValueError(f"Invalid layer '{self}'.")
 
     def __str__(self: Layer) -> str:
-        return self.value
+        return self.name
 
 
 class Move(Enum):
