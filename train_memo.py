@@ -46,6 +46,7 @@ def main():
         print()
         input("Press ENTER to continue.")
         clear_screen()
+        time.sleep(0.1)
 
 
 if __name__ == "__main__":
