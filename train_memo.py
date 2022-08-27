@@ -1,3 +1,5 @@
+import time
+
 from lib.drawer import RubiksCubeDrawer
 from lib.rubiks_cube import Move, RubiksCube
 from lib.scrambler import RubiksCubeScrambler
@@ -24,9 +26,13 @@ def main():
         print(RubiksCubeDrawer.draw(rc))
         print()
         # Input solution
+        input("Press ENTER to start")
+        start = time.time()
+        print()
         corner_targets = _input_targets(f"Corners:\n# ")
         edge_targets = _input_targets(f"Edges:\n# ")
-        # Check solutions
+        end = time.time()
+        # Check solution
         rc = rc.apply([Move.Z2])
         rc = M2Solver.apply_solution(rc, edge_targets, corner_targets)
         print()
@@ -36,6 +42,7 @@ def main():
             print(f"Memorization successful!")
         else:
             print(f"Memorization failed.")
+        print(f"Time: {end - start:.2f} s")
         print()
         input("Press ENTER to continue.")
         clear_screen()
