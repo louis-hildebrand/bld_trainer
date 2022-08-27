@@ -1,4 +1,5 @@
 from typing import TypeVar
+import os
 
 
 T = TypeVar("T")
@@ -22,3 +23,7 @@ def cycle(x: list[T], idx: list[int]) -> list[T]:
         out[idx[i]] = out[idx[i - 1]]
     out[idx[0]] = temp
     return out
+
+
+def clear_screen() -> None:
+    os.system("cls||clear")
