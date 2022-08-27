@@ -44,7 +44,7 @@ def main():
             print(f"Memorization failed.")
         print(f"Time: {end - start:.2f} s")
         print()
-        input("Press ENTER to continue.")
+        input("Press ENTER to continue")
         clear_screen()
         time.sleep(0.1)
 
