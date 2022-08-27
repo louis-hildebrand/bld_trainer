@@ -328,12 +328,55 @@ class RubiksCube:
             out[edge] = self._edges[edge.value]
         return out
 
+    def orient(self: RubiksCube, top_color: Color = Color.WHITE, front_color: Color = Color.GREEN) -> RubiksCube:
+        # Find sticker matching the desired top color
+        top_index = self._centers.index(top_color)
+        match top_index:
+            case CenterSticker.U.value:
+                rc = self
+            case CenterSticker.F.value:
+                rc = self.apply([Move.X])
+            case CenterSticker.R.value:
+                rc = self.apply([Move.Z_PRIME])
+            case CenterSticker.B.value:
+                rc = self.apply([Move.X_PRIME])
+            case CenterSticker.L.value:
+                rc = self.apply([Move.Z])
+            case CenterSticker.D.value:
+                rc = self.apply([Move.Z2])
+            case _:
+                raise ValueError(f"Unable to find sticker with color '{top_color}' to move to top.")
+        # Find sticker matching the desired front color
+        front_index = rc._centers.index(front_color)
+        match front_index:
+            case CenterSticker.U.value:
+                raise ValueError(
+                    f"Attempt to place the same color on top and on front ('{top_color}' and '{front_color}')."
+                )
+            case CenterSticker.F.value:
+                pass
+            case CenterSticker.R.value:
+                rc = self.apply([Move.Y])
+            case CenterSticker.B.value:
+                rc = self.apply([Move.Y2])
+            case CenterSticker.L.value:
+                rc = self.apply([Move.Y_PRIME])
+            case CenterSticker.D.value:
+                raise ValueError(
+                    f"Attempt to place opposite colors on top and on front ('{top_color}' and '{front_color}')."
+                )
+            case _:
+                raise ValueError(f"Unable to find sticker with color '{front_color}' to move to front.")
+        return rc
+
     def __eq__(self: RubiksCube, o: object) -> bool:
-        # TODO: Account for rotations
+        """
+        Checks whether two Rubik's Cubes are equal, *including overall orientation*.
+        """
         return (isinstance(o, RubiksCube)
             and self._centers == o._centers
             and self._corners == o._corners
             and self._edges == o._edges)
 
     def is_solved(self: RubiksCube) -> bool:
-        return self == RubiksCube()
+        return self.orient() == RubiksCube()
