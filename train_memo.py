@@ -1,6 +1,9 @@
+from datetime import datetime, timedelta
+import math
 import time
 
 from lib.drawer import RubiksCubeDrawer
+from lib.result import save_result
 from lib.rubiks_cube import Move, RubiksCube
 from lib.scrambler import RubiksCubeScrambler
 from lib.solver import M2Solver, Target
@@ -16,6 +19,13 @@ def _input_targets(msg: str) -> list[Target]:
             print(f"Invalid target {ke}. Please try again.\n")
 
 
+def human_readable_time(t: timedelta) -> str:
+    ms = t.microseconds // 1000
+    s = math.floor(t.total_seconds())
+    m, s = divmod(s, 60)
+    return f"{m:d}:{s:02d}.{ms:03d}"
+
+
 def main():
     while True:
         # Generate random scramble and print scramble sequence
@@ -27,22 +37,29 @@ def main():
         print()
         # Input solution
         input("Press ENTER to start")
-        start = time.time()
         print()
+        start_utc = datetime.utcnow()
+        start = time.time()
         corner_targets = _input_targets(f"Corners:\n# ")
+        corner_end_time = time.time()
         edge_targets = _input_targets(f"Edges:\n# ")
-        end = time.time()
+        edge_end_time = time.time()
         # Check solution
         rc = rc.apply([Move.Z2])
         rc = M2Solver.apply_solution(rc, edge_targets, corner_targets)
         print()
         print(RubiksCubeDrawer.draw(rc))
         print()
-        if rc.is_solved():
-            print(f"Memorization successful!")
-        else:
-            print(f"Memorization failed.")
-        print(f"Time: {end - start:.2f} s")
+        # Save and print stats
+        success = rc.is_solved()
+        corners_duration = timedelta(seconds = corner_end_time - start)
+        edges_duration = timedelta(seconds = edge_end_time - corner_end_time)
+        save_result(
+            start_utc, scramble, corners_duration, edges_duration, corner_targets, edge_targets, success
+        )
+        print("Memorization successful!" if success else "Memorization failed.")
+        print(f"Corners: {human_readable_time(corners_duration)}")
+        print(f"Edges: {human_readable_time(edges_duration)}")
         print()
         input("Press ENTER to continue")
         clear_screen()
