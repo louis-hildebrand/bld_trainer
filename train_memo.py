@@ -19,7 +19,7 @@ def _input_targets(msg: str) -> list[Target]:
             print(f"Invalid target {ke}. Please try again.\n")
 
 
-def human_readable_time(t: timedelta) -> str:
+def _human_readable_time(t: timedelta) -> str:
     ms = t.microseconds // 1000
     s = math.floor(t.total_seconds())
     m, s = divmod(s, 60)
@@ -58,8 +58,8 @@ def main():
             start_utc, scramble, corners_duration, edges_duration, corner_targets, edge_targets, success
         )
         print("Memorization successful!" if success else "Memorization failed.")
-        print(f"Corners: {human_readable_time(corners_duration)}")
-        print(f"Edges: {human_readable_time(edges_duration)}")
+        print(f"Corners: {_human_readable_time(corners_duration)}")
+        print(f"Edges: {_human_readable_time(edges_duration)}")
         print()
         input("Press ENTER to continue")
         clear_screen()
