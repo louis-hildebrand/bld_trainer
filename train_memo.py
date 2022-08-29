@@ -28,6 +28,7 @@ def _human_readable_time(t: timedelta) -> str:
 
 def main():
     while True:
+        clear_screen()
         # Generate random scramble and print scramble sequence
         scramble = RubiksCubeScrambler.random_scramble()
         print(f"Scramble: {' '.join([str(m) for m in scramble])}")
@@ -63,7 +64,6 @@ def main():
         print(f"Total:   {_human_readable_time(corners_duration + edges_duration)}")
         print()
         input("Press ENTER to continue")
-        clear_screen()
         time.sleep(0.1)
 
 
