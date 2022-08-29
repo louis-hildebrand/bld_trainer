@@ -46,6 +46,9 @@ class Target(Enum):
             case _:
                 return self
 
+    def __str__(self: Target) -> str:
+        return self.name
+
 
 class M2Solver:
     _EDGE_ALGORITHMS = {
