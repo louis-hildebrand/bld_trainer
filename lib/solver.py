@@ -58,6 +58,7 @@ class M2Solver:
         Target.D: Move.parse("(L' U' L U) M2 (U' L' U L)"),
         Target.E: Move.parse("D M' U R2 U' M U R2 U' D' M2"),
         Target.F: Move.parse("(U R U') M2 (U R' U')"),
+        Target.G: None,
         Target.H: Move.parse("(U' L' U) M2 (U' L U)"),
         Target.I: Move.parse("(B' R B) M2 (B' R' B)"),
         Target.J: Move.parse("(R' B' R B) M2 (B' R' B R)"),
@@ -71,6 +72,7 @@ class M2Solver:
         Target.R: Move.parse("(B L2 B') M2 (B L2 B')"),
         Target.S: Move.parse("(B L B') M2 (B L' B')"),
         Target.T: Move.parse("(L B L' B') M2 (B L B' L')"),
+        Target.U: None,
         Target.V: Move.parse("(U R2 U') M2 (U R2 U')"),
         Target.W: Move.parse("M U2 M U2"),
         Target.X: Move.parse("(U' L2 U) M2 (U' L2 U)"),
@@ -78,6 +80,7 @@ class M2Solver:
     _PARITY_ALGORITHM = Move.parse("(D' L2 D) M2 (D' L2 D)")
     _L_ALG = "R U' R' U' R U R' F' R U R' U' R' F R"
     _CORNER_ALGORITHMS = {
+        Target.A: None,
         Target.B: Move.parse(f"(R D') ({_L_ALG}) (D R')"),
         Target.C: Move.parse(f"F ({_L_ALG}) F'"),
         Target.D: Move.parse(f"(F2 D' F') ({_L_ALG}) (F D F2)"),
@@ -90,8 +93,10 @@ class M2Solver:
         Target.K: Move.parse(f"R ({_L_ALG}) R'"),
         Target.L: Move.parse(_L_ALG),
         Target.M: Move.parse(f"(R' F) ({_L_ALG}) (F' R)"),
+        Target.N: None,
         Target.O: Move.parse(f"(D' R) ({_L_ALG}) (R' D)"),
         Target.P: Move.parse(f"D' ({_L_ALG}) D"),
+        Target.Q: None,
         Target.R: Move.parse(f"F2 ({_L_ALG}) F2"),
         Target.S: Move.parse(f"(D2 R) ({_L_ALG}) (R' D2)"),
         Target.T: Move.parse(f"D2 ({_L_ALG}) D2"),
@@ -108,11 +113,19 @@ class M2Solver:
         for (i, target) in enumerate(edge_targets):
             if i % 2 == 1:
                 target = target.flip()
-            alg += M2Solver._EDGE_ALGORITHMS[target]
+            a = M2Solver._EDGE_ALGORITHMS[target]
+            if a is None:
+                print(f"WARNING: '{target}' is not a valid edge target.")
+            else:
+                alg += a
         # Parity
         if len(edge_targets) % 2 == 1:
             alg += M2Solver._PARITY_ALGORITHM
         # Corners
         for target in corner_targets:
-            alg += M2Solver._CORNER_ALGORITHMS[target]
+            a = M2Solver._CORNER_ALGORITHMS[target]
+            if a is None:
+                print(f"WARNING: '{target}' is not a valid corner target.")
+            else:
+                alg += a
         return rc.apply(alg)
