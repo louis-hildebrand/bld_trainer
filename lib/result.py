@@ -5,7 +5,6 @@ import csv
 import math
 import os
 
-from lib.game_mode import GameMode
 from lib.rubiks_cube import Move
 from lib.solver import Target
 
@@ -30,7 +29,7 @@ class Result:
     edge_solution: list[Target]
     corner_solution: list[Target]
     success: bool
-    game_mode: GameMode
+    game_mode: str
 
 
 def _initialize_results_file() -> None:
@@ -52,5 +51,5 @@ def save_result(result: Result) -> None:
             "".join([str(t) for t in result.edge_solution]),
             "".join([str(t) for t in result.corner_solution]),
             result.success,
-            str(result.game_mode)
+            result.game_mode
         ])
