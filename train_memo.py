@@ -16,8 +16,6 @@ from lib.utils import clear_screen
 class SolutionInput:
     edge_targets: list[Target]
     corner_targets: list[Target]
-    corner_duration: timedelta
-    edge_duration: timedelta
     total_duration: timedelta
 
 
@@ -53,21 +51,33 @@ def _human_readable_time(t: timedelta) -> str:
 def _input_solution_CE() -> SolutionInput:
     start = time.time()
     corner_targets = _input_targets(f"Corners:\n# ")
-    corner_end_time = time.time()
     edge_targets = _input_targets(f"Edges:\n# ")
-    edge_end_time = time.time()
-    corner_duration = timedelta(seconds = corner_end_time - start)
-    edge_duration = timedelta(seconds = edge_end_time - corner_end_time)
-    total_duration = corner_duration + edge_duration
-    return SolutionInput(edge_targets, corner_targets, corner_duration, edge_duration, total_duration)
+    end = time.time()
+    return SolutionInput(edge_targets, corner_targets, timedelta(seconds = end - start))
+
+
+def _input_solution_EC() -> SolutionInput:
+    start = time.time()
+    input("Press ENTER when you are ready to enter your solution")
+    end = time.time()
+    print()
+    edge_targets = _input_targets(f"Edges:\n# ")
+    corner_targets = _input_targets(f"Corners:\n# ")
+    return SolutionInput(edge_targets, corner_targets, timedelta(seconds = end - start))
+
+
+def _input_solution(game_mode: GameMode) -> SolutionInput:
+    match game_mode:
+        case GameMode.CE:
+            return _input_solution_CE()
+        case GameMode.EC:
+            return _input_solution_EC()
 
 
 def _save_and_display_result(result: Result) -> None:
     save_result(result)
     print("Memorization successful!" if result.success else "Memorization failed.")
-    print(f"Corners: {_human_readable_time(result.corner_duration)}")
-    print(f"Edges:   {_human_readable_time(result.edge_duration)}")
-    print(f"Total:   {_human_readable_time(result.total_duration)}")
+    print(f"Time: {_human_readable_time(result.total_duration)}")
 
 
 def _do_solve(game_mode: GameMode) -> None:
@@ -81,7 +91,7 @@ def _do_solve(game_mode: GameMode) -> None:
     input("Press ENTER to start")
     print()
     start_utc = datetime.utcnow()
-    si = _input_solution_CE()
+    si = _input_solution(game_mode)
     # Check solution
     rc = rc.apply([Move.Z2])
     rc = M2Solver.apply_solution(rc, si.edge_targets, si.corner_targets)
@@ -91,8 +101,6 @@ def _do_solve(game_mode: GameMode) -> None:
     result = Result(
         start_utc,
         scramble,
-        si.corner_duration,
-        si.edge_duration,
         si.total_duration,
         si.edge_targets,
         si.corner_targets,

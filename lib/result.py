@@ -14,9 +14,7 @@ _RESULTS_FILENAME = "results/memo.csv"
 _HEADER_ROW = [
     "start_utc",
     "scramble",
-    "corners_millis",
-    "edges_millis",
-    "total_millis",
+    "duration_millis",
     "edge_solution",
     "corner_solution",
     "success",
@@ -28,8 +26,6 @@ _HEADER_ROW = [
 class Result:
     start_utc: datetime
     scramble: list[Move]
-    corner_duration: timedelta
-    edge_duration: timedelta
     total_duration: timedelta
     edge_solution: list[Target]
     corner_solution: list[Target]
@@ -44,10 +40,6 @@ def _initialize_results_file() -> None:
         writer.writerow(_HEADER_ROW)
 
 
-def _duration_to_millis(td: timedelta | None) -> int | None:
-    return None if td is None else math.floor(td.total_seconds() * 1000)
-
-
 def save_result(result: Result) -> None:
     if not os.path.exists(_RESULTS_FILENAME):
         _initialize_results_file()
@@ -56,9 +48,7 @@ def save_result(result: Result) -> None:
         writer.writerow([
             result.start_utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
             " ".join([str(m) for m in result.scramble]),
-            _duration_to_millis(result.corner_duration),
-            _duration_to_millis(result.edge_duration),
-            _duration_to_millis(result.total_duration),
+            None if result.total_duration is None else math.floor(result.total_duration.total_seconds() * 1000),
             "".join([str(t) for t in result.edge_solution]),
             "".join([str(t) for t in result.corner_solution]),
             result.success,
